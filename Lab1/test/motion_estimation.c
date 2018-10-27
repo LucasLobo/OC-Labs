@@ -101,27 +101,27 @@ unsigned char frame_memory_read(int frame, unsigned char *frame_memory, int rela
     int offset, absolute_address;
 
     switch(frame){
-	case PREVIOUS_Y:
-	    offset = 0.00 * pixelsperframe;
-	    break;
-	case PREVIOUS_CB:
-	    offset = 1.00 * pixelsperframe;
-	    break;
-	case PREVIOUS_CR:
-	    offset = 1.25 * pixelsperframe;
-	    break;
-	case CURRENT_Y:
-	    offset = 1.50 * pixelsperframe;
-	    break;
-	case CURRENT_CB:
-	    offset = 2.50 * pixelsperframe;
-	    break;
-	case CURRENT_CR:
-	    offset = 2.75 * pixelsperframe;
-	    break;
-	default:
-	    printf("ERROR: Frame type not defined!\n");
-	    break;
+    	case PREVIOUS_Y:
+    	    offset = 0.00 * pixelsperframe;
+    	    break;
+    	case PREVIOUS_CB:
+    	    offset = 1.00 * pixelsperframe;
+    	    break;
+    	case PREVIOUS_CR:
+    	    offset = 1.25 * pixelsperframe;
+    	    break;
+    	case CURRENT_Y:
+    	    offset = 1.50 * pixelsperframe;
+    	    break;
+    	case CURRENT_CB:
+    	    offset = 2.50 * pixelsperframe;
+    	    break;
+    	case CURRENT_CR:
+    	    offset = 2.75 * pixelsperframe;
+    	    break;
+    	default:
+    	    printf("ERROR: Frame type not defined!\n");
+    	    break;
     }
     absolute_address = offset + relative_address;
     fprintf(trace_file,"%c %08x %d\n",'r',absolute_address,1);
@@ -138,27 +138,27 @@ unsigned char frame_memory_write(int frame, unsigned char *frame_memory, int rel
     int offset, absolute_address;
 
     switch(frame){
-	case PREVIOUS_Y:
-	    offset = 0.00 * pixelsperframe;
-	    break;
-	case PREVIOUS_CB:
-	    offset = 1.00 * pixelsperframe;
-	    break;
-	case PREVIOUS_CR:
-	    offset = 1.25 * pixelsperframe;
-	    break;
-	case CURRENT_Y:
-	    offset = 1.50 * pixelsperframe;
-	    break;
-	case CURRENT_CB:
-	    offset = 2.50 * pixelsperframe;
-	    break;
-	case CURRENT_CR:
-	    offset = 2.75 * pixelsperframe;
-	    break;
-	default:
-	    printf("ERROR: Frame type not defined!\n");
-	    break;
+    	case PREVIOUS_Y:
+    	    offset = 0.00 * pixelsperframe;
+    	    break;
+    	case PREVIOUS_CB:
+    	    offset = 1.00 * pixelsperframe;
+    	    break;
+    	case PREVIOUS_CR:
+    	    offset = 1.25 * pixelsperframe;
+    	    break;
+    	case CURRENT_Y:
+    	    offset = 1.50 * pixelsperframe;
+    	    break;
+    	case CURRENT_CB:
+    	    offset = 2.50 * pixelsperframe;
+    	    break;
+    	case CURRENT_CR:
+    	    offset = 2.75 * pixelsperframe;
+    	    break;
+    	default:
+    	    printf("ERROR: Frame type not defined!\n");
+    	    break;
     }
     absolute_address = offset + relative_address;
     fprintf(trace_file,"%c %08x %d\n",'w',absolute_address,1);
@@ -174,20 +174,20 @@ void get_image(int frame, unsigned char *image, FILE * fp)
     int i, size;
 
     switch(frame){
-	case PREVIOUS_Y:
-	case CURRENT_Y:
-	    size = 1.00 * pixelsperframe;
-	    break;
-	case PREVIOUS_CB:
-	case PREVIOUS_CR:
-	case CURRENT_CB:
-	case CURRENT_CR:
-	    size = 0.25 * pixelsperframe;
-	    break;
-	default:
-	    printf("ERROR: Frame type not defined!\n");
-	    break;
-    }
+    	case PREVIOUS_Y:
+    	case CURRENT_Y:
+    	    size = 1.00 * pixelsperframe;
+    	    break;
+    	case PREVIOUS_CB:
+    	case PREVIOUS_CR:
+    	case CURRENT_CB:
+    	case CURRENT_CR:
+    	    size = 0.25 * pixelsperframe;
+    	    break;
+    	default:
+    	    printf("ERROR: Frame type not defined!\n");
+    	    break;
+        }
     for (i = 0; i < size; i++)
         frame_memory_write(frame, frame_memory, i, (unsigned char) fgetc(fp));
 }
@@ -204,7 +204,7 @@ int main( /*int argc, char **argv */ )
     MV SOFT_MVs[line_max][col_max];
     int x_SAD_min;
     int y_SAD_min;
- 
+
     WINDOW SA;
     WINDOW RB;
 
@@ -229,81 +229,81 @@ int main( /*int argc, char **argv */ )
     get_image(PREVIOUS_CR, frame_memory, fp1);
     // Processing of the remaining frames (INTER)
     for (i = 1; i <= n_frames; i++) {
-	fprintf(fp2, "\n************************************ FRAME No.%2d ************************************\n", i);
-	// MV and SAD tables initialization
-	memset(SOFT_MVs, 0, sizeof(SOFT_MVs));
-	// Input of the current image
-	get_image(CURRENT_Y,  frame_memory, fp1);
-	get_image(CURRENT_CB, frame_memory, fp1);
-	get_image(CURRENT_CR, frame_memory, fp1);
+    	fprintf(fp2, "\n************************************ FRAME No.%2d ************************************\n", i);
+    	// MV and SAD tables initialization
+    	memset(SOFT_MVs, 0, sizeof(SOFT_MVs));
+    	// Input of the current image
+    	get_image(CURRENT_Y,  frame_memory, fp1);
+    	get_image(CURRENT_CB, frame_memory, fp1);
+    	get_image(CURRENT_CR, frame_memory, fp1);
 
-	// MB processing
-	for (block_l = 0; block_l < line_max; block_l++) {
-	    for (block_c = 0; block_c < col_max; block_c++) {
+    	// MB processing
+    	for (block_l = 0; block_l < line_max; block_l++) {
+  	    for (block_c = 0; block_c < col_max; block_c++) {
 
-                RB.UL.l=block_l*M;
-                RB.UL.c=block_c*M;
-                RB.LR.l=block_l*M+(M-1);
-                RB.LR.c=block_c*M+(M-1);
-                SA.UL.l=MAX(0,block_l*M-p);
-                SA.UL.c=MAX(0,block_c*M-p);
-                SA.LR.l=MIN(block_l*M+(M-1)+p,line_max*M);
-                SA.LR.c=MIN(block_c*M+(M-1)+p,col_max*M);
-                SA.CENTER.l=block_l*M;
-                SA.CENTER.c=block_c*M;
+          RB.UL.l=block_l*M;
+          RB.UL.c=block_c*M;
+          RB.LR.l=block_l*M+(M-1);
+          RB.LR.c=block_c*M+(M-1);
+          SA.UL.l=MAX(0,block_l*M-p);
+          SA.UL.c=MAX(0,block_c*M-p);
+          SA.LR.l=MIN(block_l*M+(M-1)+p,line_max*M);
+          SA.LR.c=MIN(block_c*M+(M-1)+p,col_max*M);
+          SA.CENTER.l=block_l*M;
+          SA.CENTER.c=block_c*M;
 
-		SAD_min = INT_MAX;
+  		    SAD_min = INT_MAX;
 
-		for (l_candidate = SA.UL.l; l_candidate <= SA.LR.l-(M-1); l_candidate++) {
-		    for (c_candidate = SA.UL.c; c_candidate <= SA.LR.c-(M-1); c_candidate++) {
-			SAD_tmp = 0;
-			for (l_intrablock = 0; l_intrablock < M; l_intrablock++) {
-			    for (c_intrablock = 0; c_intrablock < M; c_intrablock++) {
-				rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
-							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock));
-				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
-							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock);
-				diff = rb_pixel - sa_pixel;
-				SAD_tmp += (diff > 0) ? (diff) : (-diff);
-			    }
-			}
-			if (SAD_tmp <= SAD_min) {
-			    SAD_min = SAD_tmp;
-			    x_SAD_min = c_candidate;
-			    y_SAD_min = l_candidate;
-			}
-		    }
-		}
-		SOFT_MVs[block_l][block_c].sad = SAD_min;
-		SOFT_MVs[block_l][block_c].x = x_SAD_min - SA.CENTER.c;
-		SOFT_MVs[block_l][block_c].y = y_SAD_min - SA.CENTER.l;
-	    }
-	}
-	// Output results
-	fprintf(fp2, "MVs Table (MV_s,MV_y):\n");
-	for (block_l = 0; block_l < line_max; block_l++) {
-	    for (block_c = 0; block_c < col_max; block_c++) {
-		fprintf(fp2, "(%d,%d)\t", (SOFT_MVs[block_l][block_c]).x, (SOFT_MVs[block_l][block_c]).y);
-		if (block_c == col_max - 1)
-		    fprintf(fp2, "\n");
-	    }
-	}
-	fprintf(fp2, "SAD_MB Table:\n");
-	for (block_l = 0; block_l < line_max; block_l++) {
-	    for (block_c = 0; block_c < col_max; block_c++) {
-		fprintf(fp2, "%d\t", (SOFT_MVs[block_l][block_c]).sad);
-		if (block_c == col_max - 1)
-		    fprintf(fp2, "\n");
-	    }
-	}
-	// Sets the current image as the reference image for the next frame
-	for (i=0;i<pixelsperframe;i++){
-	    frame_memory_write(PREVIOUS_Y, frame_memory, i, frame_memory_read(CURRENT_Y, frame_memory, i) );
-	}
-	for (i=0;i<0.25*pixelsperframe;i++){
-	    frame_memory_write(PREVIOUS_CB, frame_memory, i, frame_memory_read(CURRENT_CB, frame_memory, i) );
-	    frame_memory_write(PREVIOUS_CR, frame_memory, i, frame_memory_read(CURRENT_CR, frame_memory, i) );
-	}
+      		for (l_candidate = SA.UL.l; l_candidate <= SA.LR.l-(M-1); l_candidate++) {
+    		    for (c_candidate = SA.UL.c; c_candidate <= SA.LR.c-(M-1); c_candidate++) {
+        			SAD_tmp = 0;
+        			for (l_intrablock = 0; l_intrablock < M; l_intrablock++) {
+      			    for (c_intrablock = 0; c_intrablock < M; c_intrablock++) {
+          				rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
+          							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock));
+          				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
+          							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock);
+          				diff = rb_pixel - sa_pixel;
+          				SAD_tmp += (diff > 0) ? (diff) : (-diff);
+      			    }
+        			}
+        			if (SAD_tmp <= SAD_min) {
+      			    SAD_min = SAD_tmp;
+      			    x_SAD_min = c_candidate;
+      			    y_SAD_min = l_candidate;
+        			}
+    		    }
+      		}
+      		SOFT_MVs[block_l][block_c].sad = SAD_min;
+      		SOFT_MVs[block_l][block_c].x = x_SAD_min - SA.CENTER.c;
+      		SOFT_MVs[block_l][block_c].y = y_SAD_min - SA.CENTER.l;
+  	    }
+    	}
+    	// Output results
+    	fprintf(fp2, "MVs Table (MV_s,MV_y):\n");
+    	for (block_l = 0; block_l < line_max; block_l++) {
+  	    for (block_c = 0; block_c < col_max; block_c++) {
+      		fprintf(fp2, "(%d,%d)\t", (SOFT_MVs[block_l][block_c]).x, (SOFT_MVs[block_l][block_c]).y);
+      		if (block_c == col_max - 1)
+      		    fprintf(fp2, "\n");
+  	    }
+    	}
+    	fprintf(fp2, "SAD_MB Table:\n");
+    	for (block_l = 0; block_l < line_max; block_l++) {
+  	    for (block_c = 0; block_c < col_max; block_c++) {
+      		fprintf(fp2, "%d\t", (SOFT_MVs[block_l][block_c]).sad);
+      		if (block_c == col_max - 1)
+      		    fprintf(fp2, "\n");
+  	    }
+    	}
+    	// Sets the current image as the reference image for the next frame
+    	for (i=0;i<pixelsperframe;i++){
+  	    frame_memory_write(PREVIOUS_Y, frame_memory, i, frame_memory_read(CURRENT_Y, frame_memory, i) );
+    	}
+    	for (i=0;i<0.25*pixelsperframe;i++){
+  	    frame_memory_write(PREVIOUS_CB, frame_memory, i, frame_memory_read(CURRENT_CB, frame_memory, i) );
+  	    frame_memory_write(PREVIOUS_CR, frame_memory, i, frame_memory_read(CURRENT_CR, frame_memory, i) );
+    	}
     }
     fclose(fp1);
     fclose(fp2);
