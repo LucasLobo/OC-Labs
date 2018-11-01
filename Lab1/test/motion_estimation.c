@@ -305,6 +305,8 @@ int main( /*int argc, char **argv */ )
   	    frame_memory_write(PREVIOUS_CR, frame_memory, i, frame_memory_read(CURRENT_CR, frame_memory, i) );
     	}
     }
+
+    
     fclose(fp1);
     fclose(fp2);
     printf("***************************************************\n");
