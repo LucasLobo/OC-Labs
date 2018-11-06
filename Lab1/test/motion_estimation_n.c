@@ -64,6 +64,7 @@
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
+
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
   (byte & 0x80 ? '1' : '0'), \
@@ -75,7 +76,6 @@
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0')
 
-#define MAX_ACCESS_LOG 65536
 
 typedef struct _MV {
     char x;
@@ -104,7 +104,6 @@ FILE *trace_file;
 FILE *acessos;
 
 int counter;
-
 
 /**************************************************************************/
 /* Frame-Memory trace auxiliary functions                                 */
@@ -142,12 +141,10 @@ unsigned char frame_memory_read(int frame, unsigned char *frame_memory, int rela
     	    break;
     }
     absolute_address = offset + relative_address;
-
-    if (flag && counter < MAX_ACCESS_LOG) {
-      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
+    if (flag && counter < 1000) {
+      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 16), BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
       counter++;
     }
-
     fprintf(trace_file,"%c %08x %d\n",'r',absolute_address,1);
     return frame_memory[absolute_address];
 }
@@ -186,13 +183,12 @@ unsigned char frame_memory_write(int frame, unsigned char *frame_memory, int rel
     }
     absolute_address = offset + relative_address;
 
-    if (flag && counter < MAX_ACCESS_LOG) {
-      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
+    if (flag && counter < 1000) {
+      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 16), BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
       counter++;
     }
 
-
-    fprintf(trace_file,"%c %08x %d\n",'w',absolute_address,1);
+    fprintf(trace_file,"%c %08x %d\n",'w',absolute_address,0);
     return frame_memory[absolute_address]=pixel;
 }
 
@@ -219,8 +215,10 @@ void get_image(int frame, unsigned char *image, FILE * fp)
     	    printf("ERROR: Frame type not defined!\n");
     	    break;
         }
-    for (i = 0; i < size; i++)
-        frame_memory_write(frame, frame_memory, i, (unsigned char) fgetc(fp), 0);
+    for (i = 0; i < size; i++) {
+      frame_memory_write(frame, frame_memory, i, (unsigned char) fgetc(fp), 0);
+    }
+
 }
 
 /**************************************************************************/
@@ -254,6 +252,7 @@ int main( /*int argc, char **argv */ )
     fp2 = (FILE *) fopen(RES_FILE, "w");
     trace_file = (FILE *) fopen(TRACE_FILE, "w");
     acessos = (FILE *) fopen(ACCESS_FILE, "w");
+
 
     // Frame no.0 (INTRA) will be the reference frame for frame no.1
     get_image(PREVIOUS_Y,  frame_memory, fp1);
@@ -292,18 +291,26 @@ int main( /*int argc, char **argv */ )
         			for (l_intrablock = 0; l_intrablock < M; l_intrablock++) {
       			    for (c_intrablock = 0; c_intrablock < M; c_intrablock++) {
 
-                  rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
-          							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 1);
-          				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
-          							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 1);
+                  if (l_candidate == SA.LR.l-(M-1) && c_candidate == SA.LR.c-(M-1)) {
+                    rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
+            							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 0);
+            				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
+            							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 0);
+                  }
 
-          				diff = rb_pixel - sa_pixel;
+                  else {
+                    rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
+            							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 0);
+            				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
+            							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 0);
+                  }
+
+
+                  diff = rb_pixel - sa_pixel;
           				SAD_tmp += (diff > 0) ? (diff) : (-diff);
       			    }
         			}
-
-              fprintf(acessos,"============================\n");
-
+              //printf("\n\n");
         			if (SAD_tmp <= SAD_min) {
       			    SAD_min = SAD_tmp;
       			    x_SAD_min = c_candidate;
@@ -335,18 +342,17 @@ int main( /*int argc, char **argv */ )
     	}
     	// Sets the current image as the reference image for the next frame
     	for (i=0;i<pixelsperframe;i++){
-  	    frame_memory_write(PREVIOUS_Y, frame_memory, i, frame_memory_read(CURRENT_Y, frame_memory, i, 0), 0);
+  	    frame_memory_write(PREVIOUS_Y, frame_memory, i, frame_memory_read(CURRENT_Y, frame_memory, i, 1), 1);
     	}
     	for (i=0;i<0.25*pixelsperframe;i++){
-  	    frame_memory_write(PREVIOUS_CB, frame_memory, i, frame_memory_read(CURRENT_CB, frame_memory, i, 0), 0);
-  	    frame_memory_write(PREVIOUS_CR, frame_memory, i, frame_memory_read(CURRENT_CR, frame_memory, i, 0), 0);
+  	    frame_memory_write(PREVIOUS_CB, frame_memory, i, frame_memory_read(CURRENT_CB, frame_memory, i, 1), 1);
+  	    frame_memory_write(PREVIOUS_CR, frame_memory, i, frame_memory_read(CURRENT_CR, frame_memory, i, 1), 1);
     	}
     }
 
-
     fclose(fp1);
     fclose(fp2);
-    //fclose(acessos);
+    fclose(acessos);
     printf("***************************************************\n");
     printf("Done! Simulation results have been successfully written to file: %s.\n\n\n", RES_FILE);
 
