@@ -2,3 +2,6 @@
 Lab1/test/motion_estimation
 Lab1/test/results.log
 Lab1/test/trace.log
+*.log
+Lab1/test/acessos.log
+Lab1/test/acessos.log

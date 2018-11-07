@@ -144,7 +144,7 @@ unsigned char frame_memory_read(int frame, unsigned char *frame_memory, int rela
     absolute_address = offset + relative_address;
 
     if (flag && counter < MAX_ACCESS_LOG) {
-      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
+      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN""BYTE_TO_BINARY_PATTERN""BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 16),BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
       counter++;
     }
 
@@ -187,7 +187,7 @@ unsigned char frame_memory_write(int frame, unsigned char *frame_memory, int rel
     absolute_address = offset + relative_address;
 
     if (flag && counter < MAX_ACCESS_LOG) {
-      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
+      fprintf(acessos,"address: "BYTE_TO_BINARY_PATTERN""BYTE_TO_BINARY_PATTERN""BYTE_TO_BINARY_PATTERN"\t%d\n", BYTE_TO_BINARY(absolute_address >> 16),BYTE_TO_BINARY(absolute_address >> 8), BYTE_TO_BINARY(absolute_address), absolute_address);
       counter++;
     }
 
@@ -302,7 +302,7 @@ int main( /*int argc, char **argv */ )
       			    }
         			}
 
-              fprintf(acessos,"============================\n");
+              //fprintf(acessos,"============================\n");
 
         			if (SAD_tmp <= SAD_min) {
       			    SAD_min = SAD_tmp;
