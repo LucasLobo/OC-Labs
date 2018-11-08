@@ -75,7 +75,7 @@
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0')
 
-#define MAX_ACCESS_LOG 65536
+#define MAX_ACCESS_LOG 6553600000
 
 typedef struct _MV {
     char x;
@@ -292,10 +292,19 @@ int main( /*int argc, char **argv */ )
         			for (l_intrablock = 0; l_intrablock < M; l_intrablock++) {
       			    for (c_intrablock = 0; c_intrablock < M; c_intrablock++) {
 
-                  rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
-          							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 1);
-          				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
-          							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 1);
+                  if (block_l == 0) {
+                    rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
+            							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 1);
+            				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
+            							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 1);
+                  }
+
+                  else {
+                    rb_pixel = frame_memory_read(  CURRENT_Y, frame_memory, \
+            							       (RB.UL.l+l_intrablock)*col_max*M + (RB.UL.c+c_intrablock), 0);
+            				sa_pixel = frame_memory_read(  PREVIOUS_Y, frame_memory, \
+            							       (l_candidate+l_intrablock)*col_max*M + c_candidate + c_intrablock, 0);
+                  }
 
           				diff = rb_pixel - sa_pixel;
           				SAD_tmp += (diff > 0) ? (diff) : (-diff);
