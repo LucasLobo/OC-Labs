@@ -3,7 +3,8 @@ After resetting counter 'PAPI_L2_DCM' [x10^6]: 0.000000
 After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
 After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
 After stopping counter 'PAPI_L1_DCM'  [x10^6]: 1076.458220
-After stopping counter 'PAPI_L2_DCM'  [x10^6]: 1075.966481
+After stopping counter 'PAPI_L2_DCM'  [x10^6]: 1075.959180
+After stopping counter 'PAPI_L2_DCA' [x10^6]: 1076.069501
 After stopping counter 'PAPI_LD_INS'  [x10^6]: 2148.540737
 After stopping counter 'PAPI_SR_INS'  [x10^6]: 1.048617
 Wall clock cycles [x10^6]: 5277.007980
