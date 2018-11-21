@@ -1,5 +1,6 @@
 After resetting counter 'PAPI_L1_DCM' [x10^6]: 0.000000
 After resetting counter 'PAPI_L2_DCM' [x10^6]: 0.000000
+After resetting counter 'PAPI_L2_DCA' [x10^6]: 0.000000
 After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
 After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
 After stopping counter 'PAPI_L1_DCM'  [x10^6]: 1076.458220
